@@ -90,9 +90,14 @@ public class AdministratorController {
 		if (administratorService.isEmailAlreadyInUse(mailAddress)) {
 			//フラッシュスコープにエラーメッセージを追加
 			model.addAttribute("errorMessage", "このメールアドレスは既に登録されています");
-
 			return toInsert(model, form);
 	}
+
+	// 確認用パスワードが間違っていた場合はエラーメッセージを出す
+	if (!form.getPassword().equals(form.getConfirmPassword())) {
+		model.addAttribute("confirmMessage", "パスワードが一致しません");
+		return toInsert(model, form);
+}
 
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー

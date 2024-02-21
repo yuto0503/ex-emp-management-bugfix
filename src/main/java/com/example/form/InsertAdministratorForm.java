@@ -22,34 +22,37 @@ public class InsertAdministratorForm {
 	@Size(min = 1, max = 127, message = "パスワードは1文字以上127文字以内で記載してください")
 	private String password;
 
+	private String confirmPassword;
+
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public String getMailAddress() {
 		return mailAddress;
 	}
-
 	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
 	}
-
 	public String getPassword() {
 		return password;
 	}
-
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
 	}
 
 	@Override
 	public String toString() {
 		return "InsertAdministratorForm [name=" + name + ", mailAddress=" + mailAddress + ", password=" + password
-				+ "]";
+				+ ", confirmPassword=" + confirmPassword + "]";
 	}
 
 }
