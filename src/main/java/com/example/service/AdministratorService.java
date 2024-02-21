@@ -40,4 +40,15 @@ public class AdministratorService {
 		Administrator administrator = administratorRepository.findByMailAddressAndPassward(mailAddress, password);
 		return administrator;
 	}
+
+	// メールアドレスの重複チェック
+	public boolean isEmailAlreadyInUse(String mailAddress) {
+		Administrator administrator = administratorRepository.findByMailAddress(mailAddress);
+		//もし、メールアドレスがあった場合、trueを返す
+		if (administrator == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

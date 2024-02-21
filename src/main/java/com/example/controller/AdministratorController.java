@@ -80,9 +80,19 @@ public class AdministratorController {
 	,RedirectAttributes redirectAttributes
 	,Model model) {
 
+		// もしエラーが出た際、入力画面に遷移させる
 		if(result.hasErrors()) {
 			return toInsert(model, form);
 		}
+
+		// メールアドレスが既に登録されている場合はエラーメッセージを返す
+		String mailAddress = form.getMailAddress();
+		if (administratorService.isEmailAlreadyInUse(mailAddress)) {
+			//フラッシュスコープにエラーメッセージを追加
+			model.addAttribute("errorMessage", "このメールアドレスは既に登録されています");
+
+			return toInsert(model, form);
+	}
 
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー

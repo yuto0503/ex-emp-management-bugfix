@@ -89,6 +89,8 @@ public class AdministratorRepository {
 		String sql = "select id,name,mail_address,password from administrators where mail_address=:mailAddress";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
 		List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
+		//もしメールアドレスがなかった場合、nullを返す。
+		//もし、メールアドレスがあった場合、その情報を返す。
 		if (administratorList.size() == 0) {
 			return null;
 		}
