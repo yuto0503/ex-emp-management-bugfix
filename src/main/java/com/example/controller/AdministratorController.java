@@ -130,8 +130,13 @@ public class AdministratorController {
 		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
 		if (administrator == null) {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return "redirect:/";
+			return "redirect:/toLogin";
 		}
+
+
+		// administratorのfindByMailAddressを使用して名前を取得する
+		administrator = administratorService.findByMailAddress(form.getMailAddress());
+		session.setAttribute("administratorName", administrator.getName());
 		return "redirect:/employee/showList";
 	}
 
@@ -146,7 +151,7 @@ public class AdministratorController {
 	@GetMapping(value = "/logout")
 	public String logout() {
 		session.invalidate();
-		return "redirect:/";
+		return "redirect:/toLogin";
 	}
 
 }
