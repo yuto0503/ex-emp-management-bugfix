@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,16 @@ public class EmployeeController {
 		return "employee/list";
 	}
 
+	// 曖昧検索
+	@GetMapping("/search")
+	public String search(String name, Model model) {
+		List<Employee> employeeList = employeeService.search(name);
+		model.addAttribute("employeeList", employeeList);
+
+		return "employee/list";
+	}
+
+
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する
 	/////////////////////////////////////////////////////
@@ -69,6 +80,10 @@ public class EmployeeController {
 	public String showDetail(String id, Model model) {
 		Employee employee = employeeService.showDetail(Integer.parseInt(id));
 		model.addAttribute("employee", employee);
+
+		// 入社日のフォーマットを変更
+		Date date = new Date();
+		model.addAttribute("date", date);
 		return "employee/detail";
 	}
 

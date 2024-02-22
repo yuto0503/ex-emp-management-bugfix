@@ -3,6 +3,9 @@ package com.example.controller;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +64,7 @@ public class AdministratorController {
 	 * @return 管理者登録画面
 	 */
 	@GetMapping("/toInsert")
-	public String toInsert() {
+	public String toInsert(Model model, InsertAdministratorForm form) {
 		return "administrator/insert";
 	}
 
@@ -72,12 +75,35 @@ public class AdministratorController {
 	 * @return ログイン画面へリダイレクト
 	 */
 	@PostMapping("/insert")
-	public String insert(InsertAdministratorForm form) {
+	public String insert(@Validated InsertAdministratorForm form
+	,BindingResult result
+	,RedirectAttributes redirectAttributes
+	,Model model) {
+
+		// もしエラーが出た際、入力画面に遷移させる
+		if(result.hasErrors()) {
+			return toInsert(model, form);
+		}
+
+		// メールアドレスが既に登録されている場合はエラーメッセージを返す
+		String mailAddress = form.getMailAddress();
+		if (administratorService.isEmailAlreadyInUse(mailAddress)) {
+			//フラッシュスコープにエラーメッセージを追加
+			model.addAttribute("errorMessage", "このメールアドレスは既に登録されています");
+			return toInsert(model, form);
+	}
+
+	// 確認用パスワードが間違っていた場合はエラーメッセージを出す
+	if (!form.getPassword().equals(form.getConfirmPassword())) {
+		model.addAttribute("confirmMessage", "パスワードが一致しません");
+		return toInsert(model, form);
+}
+
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
 		administratorService.insert(administrator);
-		return "employee/list";
+		return "redirect:/toLogin";
 	}
 
 	/////////////////////////////////////////////////////
@@ -88,7 +114,7 @@ public class AdministratorController {
 	 * 
 	 * @return ログイン画面
 	 */
-	@GetMapping("/")
+	@GetMapping("/toLogin")
 	public String toLogin() {
 		return "administrator/login";
 	}
@@ -104,8 +130,13 @@ public class AdministratorController {
 		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
 		if (administrator == null) {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return "redirect:/";
+			return "redirect:/toLogin";
 		}
+
+
+		// administratorのfindByMailAddressを使用して名前を取得する
+		administrator = administratorService.findByMailAddress(form.getMailAddress());
+		session.setAttribute("administratorName", administrator.getName());
 		return "redirect:/employee/showList";
 	}
 
@@ -120,7 +151,7 @@ public class AdministratorController {
 	@GetMapping(value = "/logout")
 	public String logout() {
 		session.invalidate();
-		return "redirect:/";
+		return "redirect:/toLogin";
 	}
 
 }

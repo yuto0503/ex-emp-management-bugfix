@@ -80,6 +80,7 @@
                 <div class="form-group">
                   <div class="row">
                     <div class="col-sm-12">
+                      <p th:text="${errorMessage}"style="color:red"></p>
                       <label for="mailAddress"> メールアドレス: </label>
                       <label
                         th:errors="*{mailAddress}"
@@ -124,6 +125,31 @@
                     </div>
                   </div>
                 </div>
+                  <!-- 確認用パスワード -->
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <p th:text="${confirmMessage}"style="color:red"></p>
+                          <label for="confirmPassword"> 確認用パスワード: </label>
+                            <label
+                              th:errors="*{confirmPassword}"
+                              class="error-messages"
+                            >
+                              上記と同じパスワードを入力してください
+                            </label>
+                            <input
+                              type="password"
+                              name="confirmPassword"
+                              id="confirmPassword"
+                              class="form-control"
+                              placeholder="confirmPassword"
+                              th:field="*{confirmPassword}"
+                              th:errorclass="error-input"
+                              value="xxxxxxxx"
+                            />
+                          </div>
+                        </div>
+                      </div>
                 <!-- 登録ボタン -->
                 <div class="form-group">
                   <div class="row">
