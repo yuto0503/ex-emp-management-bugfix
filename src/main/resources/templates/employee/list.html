@@ -100,6 +100,15 @@
 
           <table class="table table-striped">
             <thead>
+
+            <!-- 曖昧検索 -->
+            <form th:action="@{/employee/search}" method="get">
+              <div class="search">
+                <input type="text" name="name">
+                <button>検索</button>
+              </div>
+            </form>
+
               <tr>
                 <th>従業員名</th>
                 <th>入社日</th>

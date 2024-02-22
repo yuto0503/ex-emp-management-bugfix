@@ -56,6 +56,16 @@ public class EmployeeController {
 		return "employee/list";
 	}
 
+	// 曖昧検索
+	@GetMapping("/search")
+	public String search(String name, Model model) {
+		List<Employee> employeeList = employeeService.search(name);
+		model.addAttribute("employeeList", employeeList);
+
+		return "employee/list";
+	}
+
+
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する
 	/////////////////////////////////////////////////////
